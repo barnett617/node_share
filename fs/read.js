@@ -12,6 +12,6 @@ fs.readFile(filePath, (err, data) => {
   if (err) {
     throw err;
   }
-  console.log(data);
+  console.log(data.toString());
   // <Buffer 52 65 61 64 20 66 72 6f 6d 20 68 65 72 65 2e>
 });

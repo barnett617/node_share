@@ -1,20 +1,31 @@
 const http = require('http');
-const server = http.createServer();
-server.on('request', (req, res) => {
-  res.setHeader('foo', 'test');
-  res.writeHead(200, {
-    'Content-Type': 'text/html',
+
+const server = http.createServer(function (request, response) {
+  response.writeHead(200, { 'Content-Type': 'text/plain' });
+
+  request.on('connection', (data) => {
+    console.log(data);
   });
-  res.write('<!doctype>');
-  res.end(`<html></html>`);
+
+  request.on('request', (req, res) => {
+    console.log(req);
+    console.log(res);
+  });
+
+  request.on('data', function (chunk) {
+      response.write(chunk);
+  });
+
+  request.on('end', function () {
+      response.end();
+  });
 });
 
-server.listen(3000, () => {
-  console.log('server is on ', server.address());
-  var req = http.request({ host: '127.0.0.1', port: 3000});
-  req.on('response', (res) => {
-    res.on('data', (chunk) => console.log('data from server ', chunk.toString()) );
-    res.on('end', () => server.close() );
-  });
-  req.end();
+const options = {
+  hostname: 'localhost',
+  port: 8080
+};
+
+server.listen(options, () => {
+  console.log(`Server running at http://${options.hostname}:${options.port}/`);
 });
